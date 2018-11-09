@@ -52,7 +52,6 @@ if (!$LogFilePath) {
 
 $javaKeyAlias = "java-key-alias"
 
-$plainPassword = "The!Super!Password!"
 if (!$Password) {
     $Password = (ConvertTo-SecureString $plainPassword -AsPlainText -Force)
 }
