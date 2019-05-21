@@ -23,7 +23,7 @@ param (
     [string]$ConfigurationFilePath,
     [Parameter(Mandatory = $false, HelpMessage = "Removes and creates task even if it already exists")]
     [switch]$Force,
-     [Parameter(Mandatory = $false, HelpMessage = "Path to script log file")]
+    [Parameter(Mandatory = $false, HelpMessage = "Path to script log file")]
     [string]$LogFilePath
 )
 
@@ -50,7 +50,7 @@ $Configuration = @{}
 
 function Get-Configuration() {
     if (!$ConfigurationFilePath) {
-        $ConfigurationFilePath = "$PSScriptRoot/ScheduledTask.yaml"
+        $ConfigurationFilePath = "$PSScriptRoot/configuration.yaml"
     }
     $content = (Get-Content -Path $ConfigurationFilePath | Out-String)
 
@@ -82,9 +82,9 @@ function Register-CustomTask {
     )
  
     "Creating Schedule Task Action ..." | Write-Log -UseHost -Path $LogFilePath
-    $taskCommand = $Configuration.action.command
-    $taskCommandArguments = $Configuration.action.commandArguments
-    $workingDirectory = $Configuration.action.workingDirectory
+    $taskCommand = $Configuration.task.action.command
+    $taskCommandArguments = $Configuration.task.action.commandArguments
+    $workingDirectory = $Configuration.task.action.workingDirectory
     $action = New-ScheduledTaskAction `
         -Execute $taskCommand `
         -Argument $taskCommandArguments `
@@ -92,10 +92,10 @@ function Register-CustomTask {
     
 
     "Creating Schedule Task Trigger ..." | Write-Log -UseHost -Path $LogFilePath
-    $repetitionIntervalInMinutes = Invoke-Expression $Configuration.trigger.repetitionIntervalInMinutes
+    $repetitionIntervalInMinutes = Invoke-Expression $Configuration.task.trigger.repetitionIntervalInMinutes
     $repetitionInterval = (New-TimeSpan -Minutes $repetitionIntervalInMinutes)
 
-    $repetitionDurationInDays = Invoke-Expression $Configuration.trigger.repetitionDurationInDays
+    $repetitionDurationInDays = Invoke-Expression $Configuration.task.trigger.repetitionDurationInDays
     $now = ([DateTime]::Now)
     $timespan = $now.AddDays($repetitionDurationInDays) - $now
 

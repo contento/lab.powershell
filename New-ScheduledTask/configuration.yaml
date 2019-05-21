@@ -1,0 +1,12 @@
+task:
+  name: "Test Task"
+  description: "PowerShell Test Task"
+  pathName: '\contento\' 
+  user: '' # empty will ask for it
+  action:
+    command: 'powershell.exe'
+    commandArguments: '-File New-TestTask.ps1'
+    workingDirectory: '{{PSScriptRoot}}'
+  trigger:
+    repetitionDurationInDays: "25*12*30" # expressions allowed
+    repetitionIntervalInMinutes: "5" # expressions allowed  
