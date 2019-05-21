@@ -40,17 +40,26 @@ Import-Module powershell-yaml
 
 #----------------------------------------------------------[Declarations]----------------------------------------------------------
 
-if (!$ConfigurationFilePath) {
-    $ConfigurationFilePath = "$PSScriptRoot/ScheduledTask.yaml"
-}
-
 if (!$LogFilePath) {
     $LogFilePath = "$PSScriptRoot/logs/$([System.IO.Path]::GetFileNameWithoutExtension($PSCommandPath)).{yyyy-MM-dd}.log"
 }
 
-$Configuration = (Get-Content -Path $ConfigurationFilePath | Out-String) | ConvertFrom-Yaml
+$Configuration = @{}
 
 #-----------------------------------------------------------[Functions]------------------------------------------------------------
+
+function Get-Configuration() {
+    if (!$ConfigurationFilePath) {
+        $ConfigurationFilePath = "$PSScriptRoot/ScheduledTask.yaml"
+    }
+    $content = (Get-Content -Path $ConfigurationFilePath | Out-String)
+
+    # macro replacements
+    $content = $content -replace "{{PSScriptRoot}}", "$PSScriptRoot" 
+        
+    # actual conversion
+    $content | ConvertFrom-Yaml 
+}
 
 function Get-TaskCredential {
     param (
@@ -126,6 +135,8 @@ function Main {
     )
 
     begin {
+        $script:Configuration = Get-Configuration
+
         $taskName = $Configuration.task.name
         $taskPathName = $Configuration.task.pathName
 

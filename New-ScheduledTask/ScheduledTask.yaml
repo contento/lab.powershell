@@ -1,12 +1,12 @@
 task:
   name: "Test Task"
-  description: "Testing Task"
+  description: "PowerShell Test Task"
   pathName: '\contento\' 
-  user: 'servicio' # empty will ask for it
+  user: '' # empty will ask for it
 action:
   command: 'powershell.exe'
   commandArguments: '-File New-TestTask.ps1'
-  workingDirectory: 'c:\Projects\contento\lab.powershell\New-ScheduledTask\'
+  workingDirectory: '{{PSScriptRoot}}'
 trigger:
-  repetitionDurationInDays: "25*12*30"
-  repetitionIntervalInMinutes: "24*60"  
+  repetitionDurationInDays: "25*12*30" # expressions allowed
+  repetitionIntervalInMinutes: "5" # expressions allowed  
